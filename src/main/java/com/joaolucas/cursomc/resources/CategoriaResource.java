@@ -1,5 +1,6 @@
 package com.joaolucas.cursomc.resources;
 
+import com.joaolucas.cursomc.dto.CategoriaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,8 @@ import com.joaolucas.cursomc.services.CategoriaService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value="/categorias")
@@ -23,6 +26,15 @@ public class CategoriaResource {
 		return ResponseEntity.ok().body(obj);
 	}
 
+	@GetMapping()
+	public ResponseEntity<List<CategoriaDTO>> findAll() {
+		List<CategoriaDTO> list = service.findAll()
+				.stream()
+				.map(CategoriaDTO::new)
+				.collect(Collectors.toList());
+		return ResponseEntity.ok().body(list);
+	}
+
 	@PostMapping
 	public ResponseEntity<Void> insert(@RequestBody Categoria obj) {
 		obj = service.insert(obj);
@@ -33,7 +45,7 @@ public class CategoriaResource {
 	@PutMapping(value="/{id}")
 	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
 		obj.setId(id);
-		obj = service.update(obj);
+		service.update(obj);
 		return ResponseEntity.noContent().build();
 	}
 
