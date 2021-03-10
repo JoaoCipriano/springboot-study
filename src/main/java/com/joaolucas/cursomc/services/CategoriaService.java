@@ -1,5 +1,6 @@
 package com.joaolucas.cursomc.services;
 
+import com.joaolucas.cursomc.dto.CategoriaDTO;
 import com.joaolucas.cursomc.services.exceptions.DataIntegrityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -52,5 +53,9 @@ public class CategoriaService {
 
 	public List<Categoria> findAll() {
 		return repo.findAll();
+	}
+
+	public Categoria fromDTO(CategoriaDTO objDto) {
+		return new Categoria(objDto.getId(), objDto.getNome());
 	}
 }
