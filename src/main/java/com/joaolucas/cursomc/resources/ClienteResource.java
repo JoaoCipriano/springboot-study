@@ -2,12 +2,12 @@ package com.joaolucas.cursomc.resources;
 
 import com.joaolucas.cursomc.domain.Cliente;
 import com.joaolucas.cursomc.dto.ClienteDTO;
+import com.joaolucas.cursomc.dto.ClienteNewDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.joaolucas.cursomc.domain.Cliente;
 import com.joaolucas.cursomc.services.ClienteService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -47,6 +47,14 @@ public class ClienteResource {
 		Page<ClienteDTO> listDto = service.findPage(page, linesPerPage, orderBy, direction)
 				.map(ClienteDTO::new);
 		return ResponseEntity.ok().body(listDto);
+	}
+
+	@PostMapping
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+		Cliente obj = service.fromDTO(objDto);
+		service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).build();
 	}
 
 	@PutMapping(value="/{id}")

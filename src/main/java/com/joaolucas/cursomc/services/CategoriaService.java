@@ -2,6 +2,7 @@ package com.joaolucas.cursomc.services;
 
 import com.joaolucas.cursomc.domain.Categoria;
 import com.joaolucas.cursomc.dto.CategoriaDTO;
+import com.joaolucas.cursomc.repositories.EnderecoRepository;
 import com.joaolucas.cursomc.services.exceptions.DataIntegrityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +21,7 @@ public class CategoriaService {
 	
 	@Autowired
 	private CategoriaRepository repo;
-	
+
 	public Categoria find(Integer id) {
 		return repo.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException(
