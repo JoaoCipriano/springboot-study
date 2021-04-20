@@ -60,6 +60,10 @@ public class CategoriaService {
 		return repo.findAll();
 	}
 
+	public List<Categoria> findAllById(List<Integer> ids) {
+		return repo.findAllById(ids);
+	}
+
 	public Categoria fromDTO(CategoriaDTO objDto) {
 		return new Categoria(objDto.getId(), objDto.getNome());
 	}
