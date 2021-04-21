@@ -10,6 +10,7 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.joaolucas.cursomc.domain.enums.TipoCliente;
+import com.joaolucas.cursomc.dto.ClienteDTO;
 
 @Entity
 public class Cliente implements Serializable{
@@ -45,6 +46,12 @@ public class Cliente implements Serializable{
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
 		this.tipo = (tipo == null) ? null : tipo.getCod();
+	}
+
+	public Cliente(ClienteDTO clienteDTO) {
+		this.id = clienteDTO.getId();
+		this.nome = clienteDTO.getNome();
+		this.email = clienteDTO.getEmail();
 	}
 
 	public Integer getId() {

@@ -6,6 +6,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.joaolucas.cursomc.dto.ItemPedidoDTO;
 
 @Entity
 public class ItemPedido implements Serializable{
@@ -30,6 +31,13 @@ public class ItemPedido implements Serializable{
 		this.preco = preco;
 	}
 
+	public ItemPedido(ItemPedidoDTO itemPedidoDTO) {
+		this.desconto = itemPedidoDTO.getDesconto();
+		this.quantidade = itemPedidoDTO.getQuantidade();
+		this.preco = itemPedidoDTO.getPreco();
+		id.setProduto(new Produto(itemPedidoDTO.getProduto().getId(), null, null));
+	}
+
 	public double getSubTotal() {
 		return (preco - desconto) * quantidade;
 	}
@@ -38,9 +46,17 @@ public class ItemPedido implements Serializable{
 	public Pedido getPedido() {
 		return id.getPedido();
 	}
+
+	public void setPedido(Pedido pedido) {
+		id.setPedido(pedido);
+	}
 	
 	public Produto getProduto() {
 		return id.getProduto();
+	}
+
+	public void setProduto(Produto produto) {
+		id.setProduto(produto);
 	}
 
 	public ItemPedidoPK getId() {
