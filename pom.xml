@@ -77,6 +77,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -90,6 +91,18 @@
 							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>3.0.4</version>
+				<configuration>
+					<appName>${heroku.appName}</appName>
+					<processTypes>
+						<web>java -Dserver.port=$PORT -Dspring.profiles.active=prod $JAVA_OPTS -jar target/cursomc-0.0.1-SNAPSHOT.jar</web>
+					</processTypes>
 				</configuration>
 			</plugin>
 		</plugins>
