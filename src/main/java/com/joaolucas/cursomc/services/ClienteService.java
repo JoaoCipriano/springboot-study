@@ -96,4 +96,8 @@ public class ClienteService {
 	public Cliente fromDTO(ClienteDTO objDto) {
 		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
 	}
+
+    public Cliente findByEmail(String email) {
+		return repo.findByEmail(email);
+    }
 }
