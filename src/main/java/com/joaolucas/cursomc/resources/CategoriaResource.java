@@ -11,7 +11,6 @@ import com.joaolucas.cursomc.services.CategoriaService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +51,7 @@ public class CategoriaResource {
 	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDto) {
 		Categoria obj = service.fromDTO(objDto);
 		service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(objDto.getId()).toUri();
+		var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(objDto.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 

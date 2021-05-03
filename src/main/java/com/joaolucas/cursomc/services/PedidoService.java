@@ -69,11 +69,11 @@ public class PedidoService {
     }
 
     public Pedido fromDTO(PedidoNewDTO pedidoNewDTO) {
-		Pedido pedido = new Pedido();
+		var pedido = new Pedido();
 
-		Cliente cliente = new Cliente(pedidoNewDTO.getCliente());
+		var cliente = new Cliente(pedidoNewDTO.getCliente());
 
-		Endereco endereco =  new Endereco(pedidoNewDTO.getEnderecoDeEntrega());
+		var endereco =  new Endereco(pedidoNewDTO.getEnderecoDeEntrega());
 
 		Set<ItemPedido> itens = pedidoNewDTO.getItens().stream().map(ItemPedido::new).collect(Collectors.toSet());
 

@@ -25,7 +25,7 @@ public class BR {
     }
 
     private static boolean checkEquals(String tfn, int length, int[] weight) {
-        final String number = tfn.substring(0, length);
+        final var number = tfn.substring(0, length);
         final int digit1 = calculate(number, weight);
         final int digit2 = calculate(number + digit1, weight);
         return tfn.equals(number + digit1 + digit2);

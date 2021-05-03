@@ -70,7 +70,7 @@ public class ClienteService {
 	}
 
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+		var pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
 	}
 
@@ -79,9 +79,9 @@ public class ClienteService {
 	}
 
 	public Cliente fromDTO(ClienteNewDTO objDto) {
-		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), passwordEncoder.encode(objDto.getSenha()));
-		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
-		Endereco end = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(), objDto.getBairro(), objDto.getCep(), cli, cid);
+		var cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), passwordEncoder.encode(objDto.getSenha()));
+		var cid = new Cidade(objDto.getCidadeId(), null, null);
+		var end = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(), objDto.getBairro(), objDto.getCep(), cli, cid);
 		cli.getEnderecos().add(end);
 		cli.getTelefones().add(objDto.getTelefone1());
 		if (objDto.getTelefone2()!=null) {

@@ -53,7 +53,7 @@ public class Pedido implements Serializable{
 	}
 
 	public double getValorTotal() {
-		double soma = 0.0;
+		var soma = 0.0;
 		for (ItemPedido ip : itens) {
 			soma += ip.getSubTotal();
 		}
@@ -110,8 +110,8 @@ public class Pedido implements Serializable{
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
+		final var prime = 31;
+		var result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -135,9 +135,9 @@ public class Pedido implements Serializable{
 
 	@Override
 	public String toString() {
-		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		final StringBuilder sb = new StringBuilder();
+		var nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		final var sb = new StringBuilder();
 		sb.append("Pedido número: ");
 		sb.append(getId());
 		sb.append(", Instante: ");

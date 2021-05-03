@@ -12,7 +12,6 @@ import com.joaolucas.cursomc.services.ClienteService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +52,7 @@ public class ClienteResource {
 	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
 		Cliente obj = service.fromDTO(objDto);
 		service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 

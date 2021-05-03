@@ -10,7 +10,6 @@ import com.joaolucas.cursomc.services.PedidoService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping(value="/pedidos")
@@ -30,7 +29,7 @@ public class PedidoResource {
 	public ResponseEntity<Void> insert(@Valid @RequestBody PedidoNewDTO objDto) {
 		Pedido obj = service.fromDTO(objDto);
 		service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 }

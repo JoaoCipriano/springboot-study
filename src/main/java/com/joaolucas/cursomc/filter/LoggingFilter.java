@@ -35,7 +35,7 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     private String getURLWithParameters(HttpServletRequest request) {
-        StringBuilder url = new StringBuilder();
+        var url = new StringBuilder();
 
         url.append(request.getMethod());
         url.append(" ");
@@ -50,7 +50,7 @@ public class LoggingFilter extends OncePerRequestFilter {
     private String getParameters(HttpServletRequest request) {
         Map<String, String[]> parameters = request.getParameterMap();
 
-        StringBuilder params = new StringBuilder();
+        var params = new StringBuilder();
         for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
             if (params.length() > 0)
                 params.append("&");

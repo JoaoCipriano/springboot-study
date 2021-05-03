@@ -26,12 +26,12 @@ public  abstract class AbstractEmailService implements EmailService {
 
     @Override
     public void sendOrderConfirmationEmail(Pedido obj) {
-        SimpleMailMessage sm = prepareSimpleMailMessageFromPedido(obj);
+        var sm = prepareSimpleMailMessageFromPedido(obj);
         sendEmail(sm);
     }
 
     protected SimpleMailMessage prepareSimpleMailMessageFromPedido(Pedido obj) {
-        SimpleMailMessage sm = new SimpleMailMessage();
+        var sm = new SimpleMailMessage();
         sm.setTo(obj.getCliente().getEmail());
         sm.setFrom(sender);
         sm.setSubject("Pedido confirmado! Código: " + obj.getId());
@@ -41,7 +41,7 @@ public  abstract class AbstractEmailService implements EmailService {
     }
 
     protected String htmlFromTemplatePedido(Pedido obj) {
-        Context context = new Context();
+        var context = new Context();
         context.setVariable("pedido", obj);
         return templateEngine.process("email/confirmacaoPedido", context);
     }
@@ -49,7 +49,7 @@ public  abstract class AbstractEmailService implements EmailService {
     @Override
     public void sendOrderConfirmationHtmlEmail(Pedido obj) {
         try {
-            MimeMessage mm = prepareMimeMessageFromPedido(obj);
+            var mm = prepareMimeMessageFromPedido(obj);
             sendHtmlEmail(mm);
         }
         catch (MessagingException e) {
@@ -58,8 +58,8 @@ public  abstract class AbstractEmailService implements EmailService {
     }
 
     protected MimeMessage prepareMimeMessageFromPedido(Pedido obj) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mmh = new MimeMessageHelper(mimeMessage, true);
+        var mimeMessage = javaMailSender.createMimeMessage();
+        var mmh = new MimeMessageHelper(mimeMessage, true);
         mmh.setTo(obj.getCliente().getEmail());
         mmh.setFrom(sender);
         mmh.setSubject("Pedido confirmado! Código: " + obj.getId());

@@ -33,8 +33,8 @@ public class ItemPedidoPK implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
+		final var prime = 31;
+		var result = 1;
 		result = prime * result + ((pedido == null) ? 0 : pedido.hashCode());
 		result = prime * result + ((produto == null) ? 0 : produto.hashCode());
 		return result;
