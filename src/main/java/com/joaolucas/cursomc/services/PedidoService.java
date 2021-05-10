@@ -3,7 +3,12 @@ package com.joaolucas.cursomc.services;
 import com.joaolucas.cursomc.domain.*;
 import com.joaolucas.cursomc.domain.enums.EstadoPagamento;
 import com.joaolucas.cursomc.dto.PedidoNewDTO;
+import com.joaolucas.cursomc.security.UserSS;
+import com.joaolucas.cursomc.services.exceptions.AuthorizationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.joaolucas.cursomc.repositories.PedidoRepository;
@@ -82,5 +87,15 @@ public class PedidoService {
 		pedido.setItens(itens);
 		pedido.setPagamento(pedidoNewDTO.getPagamento());
 		return pedido;
+	}
+
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserService.authenticaded();
+		if (user == null) {
+			throw new AuthorizationException("Acesso Negado");
+		}
+		var pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+		var cliente = clienteService.find(user.getId());
+		return repo.findByCliente(cliente, pageRequest);
 	}
 }
