@@ -56,6 +56,10 @@ public class ClienteService {
 		return obj;
 	}
 
+	public Cliente insertOrUpdate(Cliente obj) {
+		return repo.save(obj);
+	}
+
 	public Cliente update(Cliente obj) {
 		Cliente newObj = find(obj.getId());
 		updateData(newObj, obj);
