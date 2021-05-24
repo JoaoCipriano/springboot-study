@@ -23,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.joaolucas.cursomc.repositories.ClienteRepository;
 import com.joaolucas.cursomc.services.exceptions.ObjectNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.List;
 
 @Service
@@ -37,6 +39,9 @@ public class ClienteService {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private S3Service s3Service;
 	
 	public Cliente find(Integer id) {
 		UserSS user = UserService.authenticated();
@@ -111,4 +116,8 @@ public class ClienteService {
     public Cliente findByEmail(String email) {
 		return repo.findByEmail(email);
     }
+
+    public URI uploadProfilePicture(MultipartFile multipartFile) {
+		return s3Service.uploadFile(multipartFile);
+	}
 }
