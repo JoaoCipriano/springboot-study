@@ -1,5 +1,6 @@
 package com.joaolucas.cursomc.services;
 
+import com.joaolucas.cursomc.repositories.ClienteRepository;
 import com.joaolucas.cursomc.security.UserSS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,11 +12,11 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private ClienteService clienteService;
+    private ClienteRepository clienteRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        var cli = clienteService.findByEmail(email);
+        var cli = clienteRepository.findByEmail(email);
         if (cli == null)
             throw new UsernameNotFoundException(email);
 

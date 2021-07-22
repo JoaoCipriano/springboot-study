@@ -7,11 +7,12 @@ import com.joaolucas.cursomc.domain.enums.Perfil;
 import com.joaolucas.cursomc.domain.enums.TipoCliente;
 import com.joaolucas.cursomc.dto.ClienteDTO;
 import com.joaolucas.cursomc.dto.ClienteNewDTO;
+import com.joaolucas.cursomc.repositories.ClienteRepository;
 import com.joaolucas.cursomc.repositories.EnderecoRepository;
 import com.joaolucas.cursomc.security.UserSS;
 import com.joaolucas.cursomc.services.exceptions.AuthorizationException;
 import com.joaolucas.cursomc.services.exceptions.DataIntegrityException;
-
+import com.joaolucas.cursomc.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,9 +22,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.joaolucas.cursomc.repositories.ClienteRepository;
-import com.joaolucas.cursomc.services.exceptions.ObjectNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
@@ -125,7 +123,18 @@ public class ClienteService {
 	}
 
     public Cliente findByEmail(String email) {
-		return repo.findByEmail(email);
+
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+
+		Cliente obj = repo.findByEmail(email);
+		if (obj == null) {
+			throw new ObjectNotFoundException(
+					"Objeto não encontrado! Id: " + user.getId() + ", Tipo: " + Cliente.class.getName());
+		}
+		return obj;
     }
 
     public URI uploadProfilePicture(MultipartFile multipartFile) {
