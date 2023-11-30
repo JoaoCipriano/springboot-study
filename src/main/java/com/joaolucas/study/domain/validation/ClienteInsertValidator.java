@@ -3,7 +3,7 @@ package com.joaolucas.study.domain.validation;
 import com.joaolucas.study.infrastructure.database.customer.CustomerType;
 import com.joaolucas.study.domain.user.NewCustomer;
 import com.joaolucas.study.infrastructure.database.customer.CustomerRepository;
-import com.joaolucas.study.controller.exceptions.FieldMessage;
+import com.joaolucas.study.controller.exception.FieldMessage;
 import com.joaolucas.study.domain.validation.utils.BR;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -43,8 +43,8 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 
         for (FieldMessage e : list) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(e.getMessage())
-                    .addPropertyNode(e.getFieldName()).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(e.message())
+                    .addPropertyNode(e.fieldName()).addConstraintViolation();
         }
         return list.isEmpty();
     }
