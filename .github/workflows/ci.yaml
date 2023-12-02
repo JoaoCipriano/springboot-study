@@ -12,4 +12,4 @@ jobs:
           java-version: 17
           distribution: 'adopt'
       - name: build
-        run: ./mvn clean install -DskipTests
+        run: ./mvnw clean install -DskipTests
