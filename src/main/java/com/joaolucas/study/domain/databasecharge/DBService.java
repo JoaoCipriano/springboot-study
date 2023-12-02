@@ -4,8 +4,6 @@ import com.joaolucas.study.infrastructure.database.address.AddressEntity;
 import com.joaolucas.study.infrastructure.database.address.AddressRepository;
 import com.joaolucas.study.infrastructure.database.category.CategoryEntity;
 import com.joaolucas.study.infrastructure.database.category.CategoryRepository;
-import com.joaolucas.study.infrastructure.database.city.CityEntity;
-import com.joaolucas.study.infrastructure.database.city.CityRepository;
 import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
 import com.joaolucas.study.infrastructure.database.customer.CustomerRepository;
 import com.joaolucas.study.infrastructure.database.customer.CustomerType;
@@ -19,8 +17,6 @@ import com.joaolucas.study.infrastructure.database.payment.PaymentWithCardEntity
 import com.joaolucas.study.infrastructure.database.payment.PaymentWithSlipEntity;
 import com.joaolucas.study.infrastructure.database.product.ProductEntity;
 import com.joaolucas.study.infrastructure.database.product.ProductRepository;
-import com.joaolucas.study.infrastructure.database.state.StateEntity;
-import com.joaolucas.study.infrastructure.database.state.StateRepository;
 import com.joaolucas.study.infrastructure.database.user.Role;
 import com.joaolucas.study.infrastructure.database.user.UserEntity;
 import com.joaolucas.study.infrastructure.database.user.UserRepository;
@@ -38,8 +34,6 @@ public class DBService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
-    private final StateRepository stateRepository;
-    private final CityRepository cityRepository;
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
@@ -91,19 +85,6 @@ public class DBService {
 
         categoryRepository.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7));
         productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11));
-
-        var est1 = new StateEntity(null, "Minas Gerais");
-        var est2 = new StateEntity(null, "São Paulo");
-
-        var c1 = new CityEntity(null, "Uberlândia", est1);
-        var c2 = new CityEntity(null, "São Paulo", est2);
-        var c3 = new CityEntity(null, "Campinas", est2);
-
-        est1.getCityEntities().add(c1);
-        est2.getCityEntities().addAll(Arrays.asList(c2, c3));
-
-        stateRepository.saveAll(Arrays.asList(est1, est2));
-        cityRepository.saveAll(Arrays.asList(c1, c2, c3));
 
         var user1 = UserEntity.builder()
                 .firstName("Maria")
