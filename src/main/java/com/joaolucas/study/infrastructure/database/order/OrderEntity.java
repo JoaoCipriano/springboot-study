@@ -39,7 +39,7 @@ public class OrderEntity implements Serializable {
     private Date instant;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "order")
-    private PaymentEntity paymentEntity;
+    private PaymentEntity payment;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -81,11 +81,9 @@ public class OrderEntity implements Serializable {
         sb.append(", Instante: ");
         sb.append(sdf.format(getInstant()));
         sb.append(", Cliente: ");
-        sb.append(getCustomer().getFirstName());
-        sb.append(" ");
-        sb.append(getCustomer().getLastName());
+        sb.append(getCustomer().getEmail());
         sb.append(", Situação do pagamento: ");
-        sb.append(getPaymentEntity().getState().getDescription());
+        sb.append(getPayment().getState().getDescription());
         sb.append("\nDetalhes:\n");
         for (OrderItemEntity ip : getItens()) {
             sb.append(ip.toString());

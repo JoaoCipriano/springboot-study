@@ -20,11 +20,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -36,6 +36,9 @@ import java.util.stream.Stream;
 @Table(name = "tb_user")
 public class UserEntity implements UserDetails {
 
+    @Serial
+    private static final long serialVersionUID = -4836921705569665380L;
+
     @Id
     @GeneratedValue
     private Integer id;
@@ -46,7 +49,7 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "PERFIS")
+    @CollectionTable(name = "ROLES")
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private Set<Integer> roles = new HashSet<>();
@@ -83,8 +86,8 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-    public boolean hasRole(Role role) {
-        return getAuthorities().contains(new SimpleGrantedAuthority(role.name()));
+    public boolean hasNotRole(Role role) {
+        return !getAuthorities().contains(new SimpleGrantedAuthority(role.name()));
     }
 
     public Set<Role> getRoles() {
@@ -93,11 +96,5 @@ public class UserEntity implements UserDetails {
 
     public void addRole(Role role) {
         roles.add(role.ordinal());
-    }
-
-    public static Set<Integer> buildRoles(Role... roles) {
-        return Stream.of(roles)
-                .map(Role::ordinal)
-                .collect(Collectors.toSet());
     }
 }

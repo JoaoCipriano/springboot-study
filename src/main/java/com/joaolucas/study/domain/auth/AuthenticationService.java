@@ -4,11 +4,9 @@ import com.joaolucas.study.controller.auth.model.AuthenticationRequest;
 import com.joaolucas.study.controller.auth.model.AuthenticationResponse;
 import com.joaolucas.study.controller.auth.model.RegisterRequest;
 import com.joaolucas.study.domain.jwt.JwtService;
-import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
 import com.joaolucas.study.infrastructure.database.user.UserEntity;
 import com.joaolucas.study.infrastructure.database.user.Role;
 import com.joaolucas.study.infrastructure.database.user.UserRepository;
-import com.joaolucas.study.domain.customer.CustomerService;
 import com.joaolucas.study.infrastructure.email.EmailService;
 import com.joaolucas.study.domain.user.UserService;
 import com.joaolucas.study.domain.exceptions.AuthorizationException;
@@ -31,7 +29,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final CustomerService customerService;
+    private final UserService userService;
     private final EmailService emailService;
     private final Random rand = new Random();
 
@@ -75,17 +73,14 @@ public class AuthenticationService {
     }
 
     public void sendNewPassword(String email) {
-        CustomerEntity customerEntity = customerService.findByEmail(email);
+        var userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ObjectNotFoundException("Email não encontrado"));
 
-        if (customerEntity == null) {
-            throw new ObjectNotFoundException("Email não encontrado");
-        }
+        var newPassword = newPassword();
+        userEntity.setPassword(passwordEncoder.encode(newPassword));
 
-        String newPass = newPassword();
-        customerEntity.setPassword(passwordEncoder.encode(newPass));
-
-        customerService.insertOrUpdate(customerEntity);
-        emailService.sendNewPasswordEmail(customerEntity, newPass);
+        userService.save(userEntity);
+        emailService.sendNewPasswordEmail(userEntity, newPassword);
     }
 
     private String newPassword() {

@@ -1,6 +1,6 @@
 package com.joaolucas.study.domain.validation;
 
-import com.joaolucas.study.domain.user.Customer;
+import com.joaolucas.study.controller.customer.model.CustomerResponse;
 import com.joaolucas.study.infrastructure.database.customer.CustomerRepository;
 import com.joaolucas.study.controller.exception.FieldMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate, Customer> {
+public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate, CustomerResponse> {
 
     private final HttpServletRequest request;
 
@@ -28,7 +28,7 @@ public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate
     }
 
     @Override
-    public boolean isValid(Customer objDto, ConstraintValidatorContext context) {
+    public boolean isValid(CustomerResponse objDto, ConstraintValidatorContext context) {
 
         @SuppressWarnings("unchecked")
         var map = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

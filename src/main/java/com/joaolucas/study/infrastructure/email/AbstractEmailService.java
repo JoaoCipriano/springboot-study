@@ -1,7 +1,7 @@
 package com.joaolucas.study.infrastructure.email;
 
-import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
 import com.joaolucas.study.infrastructure.database.order.OrderEntity;
+import com.joaolucas.study.infrastructure.database.user.UserEntity;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -68,18 +68,18 @@ public abstract class AbstractEmailService implements EmailService {
     }
 
     @Override
-    public void sendNewPasswordEmail(CustomerEntity customerEntity, String newPass) {
-        SimpleMailMessage sm = prepareNewPasswordEmail(customerEntity, newPass);
+    public void sendNewPasswordEmail(UserEntity userEntity, String newPassword) {
+        SimpleMailMessage sm = prepareNewPasswordEmail(userEntity, newPassword);
         sendEmail(sm);
     }
 
-    protected SimpleMailMessage prepareNewPasswordEmail(CustomerEntity customerEntity, String newPass) {
+    protected SimpleMailMessage prepareNewPasswordEmail(UserEntity userEntity, String newPassword) {
         var sm = new SimpleMailMessage();
-        sm.setTo(customerEntity.getEmail());
+        sm.setTo(userEntity.getEmail());
         sm.setFrom(sender);
         sm.setSubject("Solicitação de nova senha");
         sm.setSentDate(new Date(System.currentTimeMillis()));
-        sm.setText("Nova senha: " + newPass);
+        sm.setText("Nova senha: " + newPassword);
         return sm;
     }
 }

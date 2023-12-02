@@ -1,9 +1,6 @@
 package com.joaolucas.study.infrastructure.database.address;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.joaolucas.study.infrastructure.database.city.CityEntity;
 import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
-import com.joaolucas.study.domain.order.Address;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,8 +23,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Table(name = "tb_address")
 public class AddressEntity implements Serializable {
+
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1856690920290414522L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,22 +35,9 @@ public class AddressEntity implements Serializable {
     private String complement;
     private String neighborhood;
     private String zipCode;
+    private String city;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
-
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private CityEntity cityEntity;
-
-    public AddressEntity(Address address) {
-        this.id = address.id();
-        this.publicPlace = address.publicPlace();
-        this.number = address.number();
-        this.complement = address.complement();
-        this.neighborhood = address.neighborhood();
-        this.zipCode = address.zipCode();
-    }
 }

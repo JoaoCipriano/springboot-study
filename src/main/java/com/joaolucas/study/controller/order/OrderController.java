@@ -1,7 +1,7 @@
 package com.joaolucas.study.controller.order;
 
 import com.joaolucas.study.infrastructure.database.order.OrderEntity;
-import com.joaolucas.study.domain.order.NewOrder;
+import com.joaolucas.study.controller.order.model.OrderRequest;
 import com.joaolucas.study.domain.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +42,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> insert(@Valid @RequestBody NewOrder objDto) {
-        OrderEntity obj = service.fromDTO(objDto);
+    public ResponseEntity<Void> insert(@Valid @RequestBody OrderRequest orderRequest) {
+        OrderEntity obj = service.fromDTO(orderRequest);
         service.insert(obj);
         var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return ResponseEntity.created(uri).build();

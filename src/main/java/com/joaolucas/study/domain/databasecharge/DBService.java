@@ -1,26 +1,28 @@
 package com.joaolucas.study.domain.databasecharge;
 
-import com.joaolucas.study.infrastructure.database.category.CategoryEntity;
-import com.joaolucas.study.infrastructure.database.city.CityEntity;
-import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
 import com.joaolucas.study.infrastructure.database.address.AddressEntity;
-import com.joaolucas.study.infrastructure.database.product.ProductEntity;
-import com.joaolucas.study.infrastructure.database.state.StateEntity;
-import com.joaolucas.study.infrastructure.database.orderitem.OrderItemEntity;
-import com.joaolucas.study.infrastructure.database.payment.PaymentWithSlipEntity;
-import com.joaolucas.study.infrastructure.database.payment.PaymentWithCardEntity;
-import com.joaolucas.study.infrastructure.database.order.OrderEntity;
-import com.joaolucas.study.infrastructure.database.customer.CustomerType;
-import com.joaolucas.study.infrastructure.database.payment.PaymentStatus;
-import com.joaolucas.study.infrastructure.database.category.CategoryRepository;
-import com.joaolucas.study.infrastructure.database.city.CityRepository;
 import com.joaolucas.study.infrastructure.database.address.AddressRepository;
-import com.joaolucas.study.infrastructure.database.state.StateRepository;
+import com.joaolucas.study.infrastructure.database.category.CategoryEntity;
+import com.joaolucas.study.infrastructure.database.category.CategoryRepository;
+import com.joaolucas.study.infrastructure.database.city.CityEntity;
+import com.joaolucas.study.infrastructure.database.city.CityRepository;
+import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
+import com.joaolucas.study.infrastructure.database.customer.CustomerRepository;
+import com.joaolucas.study.infrastructure.database.customer.CustomerType;
+import com.joaolucas.study.infrastructure.database.order.OrderEntity;
+import com.joaolucas.study.infrastructure.database.order.OrderRepository;
+import com.joaolucas.study.infrastructure.database.orderitem.OrderItemEntity;
 import com.joaolucas.study.infrastructure.database.orderitem.OrderItemRepository;
 import com.joaolucas.study.infrastructure.database.payment.PaymentRepository;
-import com.joaolucas.study.infrastructure.database.order.OrderRepository;
+import com.joaolucas.study.infrastructure.database.payment.PaymentStatus;
+import com.joaolucas.study.infrastructure.database.payment.PaymentWithCardEntity;
+import com.joaolucas.study.infrastructure.database.payment.PaymentWithSlipEntity;
+import com.joaolucas.study.infrastructure.database.product.ProductEntity;
 import com.joaolucas.study.infrastructure.database.product.ProductRepository;
+import com.joaolucas.study.infrastructure.database.state.StateEntity;
+import com.joaolucas.study.infrastructure.database.state.StateRepository;
 import com.joaolucas.study.infrastructure.database.user.Role;
+import com.joaolucas.study.infrastructure.database.user.UserEntity;
 import com.joaolucas.study.infrastructure.database.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,23 +37,15 @@ import java.util.Arrays;
 public class DBService {
 
     private final CategoryRepository categoryRepository;
-
     private final ProductRepository productRepository;
-
     private final StateRepository stateRepository;
-
     private final CityRepository cityRepository;
-
     private final UserRepository userRepository;
-
+    private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
-
     private final OrderRepository orderRepository;
-
     private final PaymentRepository paymentRepository;
-
     private final OrderItemRepository orderItemRepository;
-
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void instantiateTestDatabase() throws ParseException {
@@ -111,21 +105,34 @@ public class DBService {
         stateRepository.saveAll(Arrays.asList(est1, est2));
         cityRepository.saveAll(Arrays.asList(c1, c2, c3));
 
-        var cli1 = new CustomerEntity(null, "Maria", "Silva", "maria@gmail.com", "36378912377", CustomerType.PESSOAFISICA, passwordEncoder.encode("123"));
+        var user1 = UserEntity.builder()
+                .firstName("Maria")
+                .lastName("Silva")
+                .email("maria@gmail.com")
+                .password(passwordEncoder.encode("123"))
+                .build();
+        var cli1 = new CustomerEntity("maria@gmail.com", "36378912377", CustomerType.PESSOA_FISICA.getCode());
         cli1.getPhones().addAll(Arrays.asList("27363323", "93838393"));
 
-        var cli2 = new CustomerEntity(null, "Ana", "Costa", "ana@gmail.com", "88071871087", CustomerType.PESSOAFISICA, passwordEncoder.encode("123"));
-        cli2.addRole(Role.ADMIN);
+        var user2 = UserEntity.builder()
+                .firstName("Ana")
+                .lastName("Costa")
+                .email("ana@gmail.com")
+                .password(passwordEncoder.encode("123"))
+                .build();
+        var cli2 = new CustomerEntity("ana@gmail.com", "88071871087", CustomerType.PESSOA_FISICA.getCode());
+        user2.addRole(Role.ADMIN);
         cli2.getPhones().addAll(Arrays.asList("93883321", "34292625"));
 
-        var e1 = new AddressEntity(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cli1, c1);
-        var e2 = new AddressEntity(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
-        var e3 = new AddressEntity(null, "Avenida Floriano", "2106", null, "Centro", "38777012", cli2, c2);
+        var e1 = new AddressEntity(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", "Uberlândia", cli1);
+        var e2 = new AddressEntity(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", "Uberlândia", cli1);
+        var e3 = new AddressEntity(null, "Avenida Floriano", "2106", null, "Centro", "38777012", "São Paulo", cli2);
 
-        cli1.getAddressEntities().addAll(Arrays.asList(e1, e2));
-        cli2.getAddressEntities().add(e3);
+        cli1.getAddresses().addAll(Arrays.asList(e1, e2));
+        cli2.getAddresses().add(e3);
 
-        userRepository.saveAll(Arrays.asList(cli1, cli2));
+        userRepository.saveAll(Arrays.asList(user1, user2));
+        customerRepository.saveAll(Arrays.asList(cli1, cli2));
         addressRepository.saveAll(Arrays.asList(e1, e2, e3));
 
         var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -134,10 +141,10 @@ public class DBService {
         var ped2 = new OrderEntity(null, sdf.parse("10/10/2020 19:35"), cli1, e2);
 
         var pagto1 = new PaymentWithCardEntity(null, PaymentStatus.PAID, ped1, 6);
-        ped1.setPaymentEntity(pagto1);
+        ped1.setPayment(pagto1);
 
         var pagto2 = new PaymentWithSlipEntity(null, PaymentStatus.PENDING, ped2, sdf.parse("20/10/2020 00:00"), null);
-        ped2.setPaymentEntity(pagto2);
+        ped2.setPayment(pagto2);
 
         cli1.getOrders().addAll(Arrays.asList(ped1, ped2));
 

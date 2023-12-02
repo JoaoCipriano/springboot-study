@@ -1,16 +1,16 @@
 package com.joaolucas.study.domain.validation;
 
-import com.joaolucas.study.infrastructure.database.customer.CustomerType;
-import com.joaolucas.study.domain.user.NewCustomer;
-import com.joaolucas.study.infrastructure.database.customer.CustomerRepository;
+import com.joaolucas.study.controller.customer.model.CustomerRequest;
 import com.joaolucas.study.controller.exception.FieldMessage;
 import com.joaolucas.study.domain.validation.utils.BR;
+import com.joaolucas.study.infrastructure.database.customer.CustomerRepository;
+import com.joaolucas.study.infrastructure.database.customer.CustomerType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.ArrayList;
 
-public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, NewCustomer> {
+public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, CustomerRequest> {
 
     private final CustomerRepository customerRepository;
 
@@ -24,21 +24,21 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
     }
 
     @Override
-    public boolean isValid(NewCustomer objDto, ConstraintValidatorContext context) {
+    public boolean isValid(CustomerRequest customerRequest, ConstraintValidatorContext context) {
 
         var list = new ArrayList<FieldMessage>();
 
-        if (objDto.tipo().equals(CustomerType.PESSOAFISICA.getCod()) && !BR.isValidCPF(objDto.cpfOuCnpj())) {
-            list.add(new FieldMessage("cpfOuCnpj", "CPF inválido"));
+        if (customerRequest.type().equals(CustomerType.PESSOA_FISICA.getCode()) && !BR.isValidCPF(customerRequest.socialId())) {
+            list.add(new FieldMessage("socialId", "invalid CPF"));
         }
 
-        if (objDto.tipo().equals(CustomerType.PESSOAJURIDICA.getCod()) && !BR.isValidCNPJ(objDto.cpfOuCnpj())) {
-            list.add(new FieldMessage("cpfOuCnpj", "CNPJ inválido"));
+        if (customerRequest.type().equals(CustomerType.PESSOA_JURIDICA.getCode()) && !BR.isValidCNPJ(customerRequest.socialId())) {
+            list.add(new FieldMessage("socialId", "invalid CNPJ"));
         }
 
-        var cliente = customerRepository.findByEmail(objDto.email());
+        var cliente = customerRepository.findByEmail(customerRequest.email());
         if (cliente.isPresent()) {
-            list.add(new FieldMessage("email", "Email já existente"));
+            list.add(new FieldMessage("email", "Email already exists"));
         }
 
         for (FieldMessage e : list) {

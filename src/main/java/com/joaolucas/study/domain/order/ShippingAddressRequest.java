@@ -1,6 +1,6 @@
 package com.joaolucas.study.domain.order;
 
-public record Address(
+public record ShippingAddressRequest(
         Integer id,
         String publicPlace,
         String number,

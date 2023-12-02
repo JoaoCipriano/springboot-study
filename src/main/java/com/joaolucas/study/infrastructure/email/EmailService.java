@@ -1,7 +1,7 @@
 package com.joaolucas.study.infrastructure.email;
 
-import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
 import com.joaolucas.study.infrastructure.database.order.OrderEntity;
+import com.joaolucas.study.infrastructure.database.user.UserEntity;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -15,5 +15,5 @@ public interface EmailService {
 
     void sendHtmlEmail(MimeMessage msg);
 
-    void sendNewPasswordEmail(CustomerEntity customerEntity, String newPass);
+    void sendNewPasswordEmail(UserEntity userEntity, String newPassword);
 }
