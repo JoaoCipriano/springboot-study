@@ -3,14 +3,14 @@ package com.joaolucas.study.domain.auth;
 import com.joaolucas.study.controller.auth.model.AuthenticationRequest;
 import com.joaolucas.study.controller.auth.model.AuthenticationResponse;
 import com.joaolucas.study.controller.auth.model.RegisterRequest;
-import com.joaolucas.study.domain.jwt.JwtService;
-import com.joaolucas.study.infrastructure.database.user.UserEntity;
-import com.joaolucas.study.infrastructure.database.user.Role;
-import com.joaolucas.study.infrastructure.database.user.UserRepository;
-import com.joaolucas.study.infrastructure.email.EmailService;
-import com.joaolucas.study.domain.user.UserService;
 import com.joaolucas.study.domain.exceptions.AuthorizationException;
 import com.joaolucas.study.domain.exceptions.ObjectNotFoundException;
+import com.joaolucas.study.domain.jwt.JwtService;
+import com.joaolucas.study.domain.user.UserService;
+import com.joaolucas.study.infrastructure.database.user.Role;
+import com.joaolucas.study.infrastructure.database.user.UserEntity;
+import com.joaolucas.study.infrastructure.database.user.UserRepository;
+import com.joaolucas.study.infrastructure.email.EmailService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.Set;
 
 @Service
@@ -31,7 +31,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final EmailService emailService;
-    private final Random rand = new Random();
+    private final SecureRandom rand = new SecureRandom();
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = UserEntity.builder()
