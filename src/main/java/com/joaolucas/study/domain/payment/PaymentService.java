@@ -11,7 +11,7 @@ public class PaymentService {
 
     private final PaymentRepository repo;
 
-    public void insert(PaymentEntity paymentEntity) {
+    public void save(PaymentEntity paymentEntity) {
         repo.save(paymentEntity);
     }
 }

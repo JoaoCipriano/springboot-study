@@ -1,4 +1,4 @@
-package com.joaolucas.study.infrastructure.database.payment;
+package com.joaolucas.study.controller.order.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

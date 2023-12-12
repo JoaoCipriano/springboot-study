@@ -18,11 +18,8 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 @Getter
@@ -36,7 +33,7 @@ public class OrderEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Date instant;
+    private LocalDateTime instant;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "order")
     private PaymentEntity payment;
@@ -50,46 +47,16 @@ public class OrderEntity implements Serializable {
     private AddressEntity shippingAddress;
 
     @OneToMany(mappedBy = "id.order")
-    private Set<OrderItemEntity> itens = new HashSet<>();
+    private Set<OrderItemEntity> items = new HashSet<>();
 
     public OrderEntity() {
     }
 
-    public OrderEntity(Integer id, Date instant, CustomerEntity customer, AddressEntity shippingAddress) {
+    public OrderEntity(Integer id, LocalDateTime instant, CustomerEntity customer, AddressEntity shippingAddress) {
         super();
         this.id = id;
         this.instant = instant;
         this.customer = customer;
         this.shippingAddress = shippingAddress;
-    }
-
-    public double getValorTotal() {
-        var soma = 0.0;
-        for (OrderItemEntity ip : itens) {
-            soma += ip.getSubTotal();
-        }
-        return soma;
-    }
-
-    @Override
-    public String toString() {
-        var nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-        var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        final var sb = new StringBuilder();
-        sb.append("Pedido número: ");
-        sb.append(getId());
-        sb.append(", Instante: ");
-        sb.append(sdf.format(getInstant()));
-        sb.append(", Cliente: ");
-        sb.append(getCustomer().getEmail());
-        sb.append(", Situação do pagamento: ");
-        sb.append(getPayment().getState().getDescription());
-        sb.append("\nDetalhes:\n");
-        for (OrderItemEntity ip : getItens()) {
-            sb.append(ip.toString());
-        }
-        sb.append("Valor total: ");
-        sb.append(nf.format(getValorTotal()));
-        return sb.toString();
     }
 }

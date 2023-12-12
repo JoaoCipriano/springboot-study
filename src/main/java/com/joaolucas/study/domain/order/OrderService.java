@@ -1,6 +1,6 @@
 package com.joaolucas.study.domain.order;
 
-import com.joaolucas.study.controller.order.model.OrderRequest;
+import com.amazonaws.util.CollectionUtils;
 import com.joaolucas.study.domain.customer.CustomerService;
 import com.joaolucas.study.domain.exceptions.AuthorizationException;
 import com.joaolucas.study.domain.exceptions.ObjectNotFoundException;
@@ -11,8 +11,6 @@ import com.joaolucas.study.domain.product.ProductService;
 import com.joaolucas.study.domain.user.UserService;
 import com.joaolucas.study.infrastructure.database.order.OrderEntity;
 import com.joaolucas.study.infrastructure.database.order.OrderRepository;
-import com.joaolucas.study.infrastructure.database.orderitem.OrderItemEntity;
-import com.joaolucas.study.infrastructure.database.payment.PaymentStatus;
 import com.joaolucas.study.infrastructure.database.payment.PaymentWithSlipEntity;
 import com.joaolucas.study.infrastructure.database.user.UserEntity;
 import com.joaolucas.study.infrastructure.email.EmailService;
@@ -23,9 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -42,47 +38,18 @@ public class OrderService {
     public OrderEntity find(Integer id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(
-                        "Objeto não encontrado Id: " + id + ", Tipo: " + OrderEntity.class.getName()));
+                        "Object not Found, Id: " + id + ", Type: " + OrderEntity.class.getName()));
     }
 
     @Transactional
     public OrderEntity insert(OrderEntity orderEntity) {
-        orderEntity.setId(null);
-        orderEntity.setInstant(new Date());
         orderEntity.setCustomer(customerService.findEntityById(orderEntity.getCustomer().getId()));
-        orderEntity.getPayment().setState(PaymentStatus.PENDING);
         orderEntity.getPayment().setOrder(orderEntity);
-        if (orderEntity.getPayment() instanceof PaymentWithSlipEntity pagto) {
-            bankSlipService.preencherPagamentoComBoleto(pagto, orderEntity.getInstant());
-        }
+        addDueDateIfNeeded(orderEntity);
         orderEntity = orderRepository.save(orderEntity);
-        paymentService.insert(orderEntity.getPayment());
-        for (OrderItemEntity ip : orderEntity.getItens()) {
-            ip.setDiscount(0.0);
-            ip.setProduct(productService.find(ip.getProduct().getId()));
-            ip.setAmount(ip.getProduct().getPrice());
-            ip.setOrder(orderEntity);
-        }
-        orderItemService.insertListPedidos(orderEntity.getItens());
+        paymentService.save(orderEntity.getPayment());
+        saveOrderItems(orderEntity);
         emailService.sendOrderConfirmationHtmlEmail(orderEntity);
-        return orderEntity;
-    }
-
-    public OrderEntity fromDTO(OrderRequest orderRequest) {
-        var orderEntity = new OrderEntity();
-
-//        var cliente = CustomerEn;
-
-//        var addressEntity = new AddressEntity(orderRequest.shippingAddress());
-
-        Set<OrderItemEntity> itens = orderRequest.items().stream()
-                .map(OrderItemEntity::new)
-                .collect(Collectors.toSet());
-
-//        orderEntity.setCustomer(cliente);
-//        orderEntity.setShippingAddress(addressEntity);
-        orderEntity.setItens(itens);
-        orderEntity.setPayment(orderRequest.paymentEntity());
         return orderEntity;
     }
 
@@ -94,5 +61,24 @@ public class OrderService {
         var pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         var cliente = customerService.findEntityById(user.getId());
         return orderRepository.findByCustomer(cliente, pageRequest);
+    }
+
+    private void addDueDateIfNeeded(OrderEntity orderEntity) {
+        if (orderEntity.getPayment() instanceof PaymentWithSlipEntity paymentWithSlip) {
+            bankSlipService.addDueDate(paymentWithSlip, orderEntity.getInstant());
+        }
+    }
+
+    private void saveOrderItems(OrderEntity orderEntity) {
+        if (!CollectionUtils.isNullOrEmpty(orderEntity.getItems())) {
+            orderEntity.getItems().forEach(orderItem -> {
+                orderItem.setDiscount(BigDecimal.ZERO);
+                orderItem.setProduct(productService.find(orderItem.getProduct().getId()));
+                orderItem.setAmount(orderItem.getProduct().getPrice());
+                orderItem.setOrder(orderEntity);
+
+            });
+            orderItemService.saveAll(orderEntity.getItems());
+        }
     }
 }

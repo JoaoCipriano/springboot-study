@@ -3,16 +3,12 @@ package com.joaolucas.study.domain.payment;
 import com.joaolucas.study.infrastructure.database.payment.PaymentWithSlipEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Service
 public class BankSlipService {
 
-    public void preencherPagamentoComBoleto(PaymentWithSlipEntity pagto, Date instanteDoPedido) {
-        var cal = Calendar.getInstance();
-        cal.setTime(instanteDoPedido);
-        cal.add(Calendar.DAY_OF_MONTH, 7);
-        pagto.setDueDate(cal.getTime());
+    public void addDueDate(PaymentWithSlipEntity paymentWithSlip, LocalDateTime orderDateTime) {
+        paymentWithSlip.setDueDate(orderDateTime.plusMonths(7).toLocalDate());
     }
 }

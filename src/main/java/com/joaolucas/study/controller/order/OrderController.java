@@ -1,8 +1,8 @@
 package com.joaolucas.study.controller.order;
 
-import com.joaolucas.study.infrastructure.database.order.OrderEntity;
+import com.joaolucas.study.application.order.OrderApplicationService;
 import com.joaolucas.study.controller.order.model.OrderRequest;
-import com.joaolucas.study.domain.order.OrderService;
+import com.joaolucas.study.controller.order.model.OrderResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,36 +16,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
 @RestController
-@RequestMapping(value = "/pedidos")
+@RequestMapping(value = "/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService service;
+    private final OrderApplicationService orderApplicationService;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<OrderEntity> find(@PathVariable Integer id) {
-        OrderEntity obj = service.find(id);
-
-        return ResponseEntity.ok().body(obj);
+    public ResponseEntity<OrderResponse> find(@PathVariable Integer id) {
+        return ResponseEntity.ok(orderApplicationService.find(id));
     }
 
     @GetMapping()
-    public ResponseEntity<Page<OrderEntity>> findPage(
+    public ResponseEntity<Page<OrderResponse>> findPage(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
-            @RequestParam(value = "orderBy", defaultValue = "instante") String orderBy,
+            @RequestParam(value = "orderBy", defaultValue = "instant") String orderBy,
             @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
-        Page<OrderEntity> list = service.findPage(page, linesPerPage, orderBy, direction);
+        Page<OrderResponse> list = orderApplicationService.findPage(page, linesPerPage, orderBy, direction);
         return ResponseEntity.ok().body(list);
     }
 
     @PostMapping
     public ResponseEntity<Void> insert(@Valid @RequestBody OrderRequest orderRequest) {
-        OrderEntity obj = service.fromDTO(orderRequest);
-        service.insert(obj);
-        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+        var response = orderApplicationService.insert(orderRequest);
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(uri).build();
     }
 }

@@ -2,7 +2,6 @@ package com.joaolucas.study.infrastructure.database.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.joaolucas.study.infrastructure.database.category.CategoryEntity;
-import com.joaolucas.study.infrastructure.database.order.OrderEntity;
 import com.joaolucas.study.infrastructure.database.orderitem.OrderItemEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +16,7 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ProductEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private Double price;
+    private BigDecimal price;
 
     @JsonIgnore
     @ManyToMany
@@ -50,19 +50,10 @@ public class ProductEntity implements Serializable {
     public ProductEntity() {
     }
 
-    public ProductEntity(Integer id, String name, Double price) {
+    public ProductEntity(Integer id, String name, BigDecimal price) {
         super();
         this.id = id;
         this.name = name;
         this.price = price;
-    }
-
-    @JsonIgnore
-    public List<OrderEntity> getOrders() {
-        var orderEntities = new ArrayList<OrderEntity>();
-        for (OrderItemEntity x : items) {
-            orderEntities.add(x.getOrder());
-        }
-        return orderEntities;
     }
 }

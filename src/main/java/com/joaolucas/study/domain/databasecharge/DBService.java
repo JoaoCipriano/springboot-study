@@ -12,7 +12,7 @@ import com.joaolucas.study.infrastructure.database.order.OrderRepository;
 import com.joaolucas.study.infrastructure.database.orderitem.OrderItemEntity;
 import com.joaolucas.study.infrastructure.database.orderitem.OrderItemRepository;
 import com.joaolucas.study.infrastructure.database.payment.PaymentRepository;
-import com.joaolucas.study.infrastructure.database.payment.PaymentStatus;
+import com.joaolucas.study.controller.order.model.PaymentStatus;
 import com.joaolucas.study.infrastructure.database.payment.PaymentWithCardEntity;
 import com.joaolucas.study.infrastructure.database.payment.PaymentWithSlipEntity;
 import com.joaolucas.study.infrastructure.database.product.ProductEntity;
@@ -24,8 +24,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 
 @Service
@@ -51,17 +54,17 @@ public class DBService {
         var cat6 = new CategoryEntity(null, "Decoração");
         var cat7 = new CategoryEntity(null, "Perfumaria");
 
-        var p1 = new ProductEntity(null, "Computador", 2000.00);
-        var p2 = new ProductEntity(null, "Impressora", 800.00);
-        var p3 = new ProductEntity(null, "Mouse", 80.00);
-        var p4 = new ProductEntity(null, "Mesa de escritório", 300.00);
-        var p5 = new ProductEntity(null, "Toalha", 50.00);
-        var p6 = new ProductEntity(null, "Colcha", 200.00);
-        var p7 = new ProductEntity(null, "TV true color", 1200.00);
-        var p8 = new ProductEntity(null, "Roçadeira", 800.00);
-        var p9 = new ProductEntity(null, "Abajour", 100.00);
-        var p10 = new ProductEntity(null, "Pendente", 180.00);
-        var p11 = new ProductEntity(null, "Shampoo", 90.00);
+        var p1 = new ProductEntity(null, "Computador", BigDecimal.valueOf(2000.00));
+        var p2 = new ProductEntity(null, "Impressora", BigDecimal.valueOf(800.00));
+        var p3 = new ProductEntity(null, "Mouse", BigDecimal.valueOf(80.00));
+        var p4 = new ProductEntity(null, "Mesa de escritório", BigDecimal.valueOf(300.00));
+        var p5 = new ProductEntity(null, "Toalha", BigDecimal.valueOf(50.00));
+        var p6 = new ProductEntity(null, "Colcha", BigDecimal.valueOf(200.00));
+        var p7 = new ProductEntity(null, "TV true color", BigDecimal.valueOf(1200.00));
+        var p8 = new ProductEntity(null, "Roçadeira", BigDecimal.valueOf(800.00));
+        var p9 = new ProductEntity(null, "Abajour", BigDecimal.valueOf(100.00));
+        var p10 = new ProductEntity(null, "Pendente", BigDecimal.valueOf(180.00));
+        var p11 = new ProductEntity(null, "Shampoo", BigDecimal.valueOf(90.00));
 
         cat1.getProducts().addAll(Arrays.asList(p1, p3));
         cat2.getProducts().addAll(Arrays.asList(p2, p4));
@@ -118,26 +121,26 @@ public class DBService {
 
         var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-        var ped1 = new OrderEntity(null, sdf.parse("30/09/2020 10:32"), cli1, e1);
-        var ped2 = new OrderEntity(null, sdf.parse("10/10/2020 19:35"), cli1, e2);
+        var ped1 = new OrderEntity(null, LocalDateTime.ofInstant(sdf.parse("30/09/2020 10:32").toInstant(), ZoneId.of("GTM-3")), cli1, e1);
+        var ped2 = new OrderEntity(null, LocalDateTime.ofInstant(sdf.parse("10/10/2020 19:35").toInstant(), ZoneId.of("GTM-3")), cli1, e2);
 
-        var pagto1 = new PaymentWithCardEntity(null, PaymentStatus.PAID, ped1, 6);
-        ped1.setPayment(pagto1);
+        var payment1 = new PaymentWithCardEntity(null, PaymentStatus.PAID.getCode(), ped1, 6);
+        ped1.setPayment(payment1);
 
-        var pagto2 = new PaymentWithSlipEntity(null, PaymentStatus.PENDING, ped2, sdf.parse("20/10/2020 00:00"), null);
-        ped2.setPayment(pagto2);
+        var payment2 = new PaymentWithSlipEntity(null, PaymentStatus.PENDING.getCode(), ped2, LocalDateTime.ofInstant(sdf.parse("20/10/2020 00:00").toInstant(), ZoneId.of("GMT-3")).toLocalDate(), null);
+        ped2.setPayment(payment2);
 
         cli1.getOrders().addAll(Arrays.asList(ped1, ped2));
 
         orderRepository.saveAll(Arrays.asList(ped1, ped2));
-        paymentRepository.saveAll(Arrays.asList(pagto1, pagto2));
+        paymentRepository.saveAll(Arrays.asList(payment1, payment2));
 
-        var ip1 = new OrderItemEntity(ped1, p1, 0.00, 1, 2000.00);
-        var ip2 = new OrderItemEntity(ped1, p3, 0.00, 2, 80.00);
-        var ip3 = new OrderItemEntity(ped2, p2, 100.00, 1, 800.00);
+        var ip1 = new OrderItemEntity(ped1, p1, BigDecimal.ZERO, 1, BigDecimal.valueOf(2000.00));
+        var ip2 = new OrderItemEntity(ped1, p3, BigDecimal.ZERO, 2, BigDecimal.valueOf(80.00));
+        var ip3 = new OrderItemEntity(ped2, p2, BigDecimal.ZERO, 1, BigDecimal.valueOf(800.00));
 
-        ped1.getItens().addAll(Arrays.asList(ip1, ip2));
-        ped2.getItens().add(ip3);
+        ped1.getItems().addAll(Arrays.asList(ip1, ip2));
+        ped2.getItems().add(ip3);
 
         p1.getItems().add(ip1);
         p2.getItems().add(ip3);

@@ -11,9 +11,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class OrderItemService {
 
-    private final OrderItemRepository repo;
+    private final OrderItemRepository repository;
 
-    public void insertListPedidos(Set<OrderItemEntity> orderItemEntities) {
-        repo.saveAll(orderItemEntities);
+    public void saveAll(Set<OrderItemEntity> orderItemEntities) {
+        repository.saveAll(orderItemEntities);
     }
 }

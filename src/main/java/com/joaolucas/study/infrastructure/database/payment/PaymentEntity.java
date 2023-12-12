@@ -1,7 +1,5 @@
 package com.joaolucas.study.infrastructure.database.payment;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.joaolucas.study.infrastructure.database.order.OrderEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,7 +8,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,18 +18,15 @@ import java.io.Serializable;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public abstract class PaymentEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private Integer state;
 
-    @JsonIgnore
+    private Integer status;
+
     @OneToOne
     @JoinColumn(name = "order_id")
     @MapsId
@@ -41,18 +35,10 @@ public abstract class PaymentEntity implements Serializable {
     protected PaymentEntity() {
     }
 
-    protected PaymentEntity(Integer id, PaymentStatus state, OrderEntity order) {
+    protected PaymentEntity(Integer id, Integer status, OrderEntity order) {
         super();
         this.id = id;
-        this.state = (state == null) ? null : state.getCode();
+        this.status = status;
         this.order = order;
-    }
-
-    public PaymentStatus getState() {
-        return PaymentStatus.toEnum(state);
-    }
-
-    public void setState(PaymentStatus state) {
-        this.state = state.getCode();
     }
 }

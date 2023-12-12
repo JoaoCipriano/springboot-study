@@ -2,9 +2,10 @@ package com.joaolucas.study.domain.orderitem;
 
 import com.joaolucas.study.domain.product.Product;
 
-public record OrderItem(
-        Double discount,
-        Integer quantity,
-        Double price,
-        Product product) {
+import java.math.BigDecimal;
+
+public record OrderItem(BigDecimal discount,
+                        Integer quantity,
+                        BigDecimal price,
+                        Product product) {
 }

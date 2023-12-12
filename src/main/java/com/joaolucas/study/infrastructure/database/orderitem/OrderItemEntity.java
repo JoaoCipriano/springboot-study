@@ -3,7 +3,6 @@ package com.joaolucas.study.infrastructure.database.orderitem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.joaolucas.study.infrastructure.database.order.OrderEntity;
 import com.joaolucas.study.infrastructure.database.product.ProductEntity;
-import com.joaolucas.study.domain.orderitem.OrderItem;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -11,6 +10,7 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -25,14 +25,14 @@ public class OrderItemEntity implements Serializable {
     @EmbeddedId
     private OrderItemPK id = new OrderItemPK();
 
-    private Double discount;
+    private BigDecimal discount;
     private Integer quantity;
-    private Double amount;
+    private BigDecimal amount;
 
     public OrderItemEntity() {
     }
 
-    public OrderItemEntity(OrderEntity order, ProductEntity product, Double discount, Integer quantity, Double amount) {
+    public OrderItemEntity(OrderEntity order, ProductEntity product, BigDecimal discount, Integer quantity, BigDecimal amount) {
         super();
         id.setOrder(order);
         id.setProduct(product);
@@ -41,15 +41,8 @@ public class OrderItemEntity implements Serializable {
         this.amount = amount;
     }
 
-    public OrderItemEntity(OrderItem orderItem) {
-        this.discount = orderItem.discount();
-        this.quantity = orderItem.quantity();
-        this.amount = orderItem.price();
-        id.setProduct(new ProductEntity(orderItem.product().id(), null, null));
-    }
-
-    public double getSubTotal() {
-        return (amount - discount) * quantity;
+    public BigDecimal getSubTotal() {
+        return amount.subtract(discount).multiply(BigDecimal.valueOf(quantity));
     }
 
     @JsonIgnore
