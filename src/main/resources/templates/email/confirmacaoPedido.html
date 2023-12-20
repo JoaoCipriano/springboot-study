@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:remove="all">Order Confirmation</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -14,11 +14,11 @@
                 th:text="${#dates.format(pedido.instante, 'dd/MM/yyyy hh:mm')}"></span>
         </p>
         <p>
-            Cliente: <span th:text="${pedido.cliente.nome}"></span>
+            Cliente: <span th:text="${pedido.customerEntity.name}"></span>
         </p>
         <p>
-            Situação do pagamento: <span
-                th:text="${pedido.pagamento.estado.descricao}"></span>
+            Situação do paymentEntity: <span
+                th:text="${pedido.paymentEntity.stateEntity.description}"></span>
         </p>
         <h3>Detalhes do pedido:</h3>
         <table border="1">
@@ -29,7 +29,7 @@
                 <th>Subtotal</th>
             </tr>
             <tr th:each="item : ${pedido.itens}">
-                <td th:text="${item.produto.nome}">nome</td>
+                <td th:text="${item.productEntity.name}">nome</td>
                 <td th:text="${item.quantidade}">quantidade</td>
                 <td th:text="${#numbers.formatDecimal(item.preco, 0, 'POINT', 2,
     'COMMA')}">preco
