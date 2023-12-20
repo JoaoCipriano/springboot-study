@@ -1,10 +1,10 @@
 package com.joaolucas.study.domain.product;
 
 import com.joaolucas.study.domain.category.CategoryService;
+import com.joaolucas.study.domain.exceptions.ObjectNotFoundException;
 import com.joaolucas.study.infrastructure.database.category.CategoryEntity;
 import com.joaolucas.study.infrastructure.database.product.ProductEntity;
 import com.joaolucas.study.infrastructure.database.product.ProductRepository;
-import com.joaolucas.study.domain.exceptions.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ public class ProductService {
     public ProductEntity find(Integer id) {
         return repo.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(
-                        "Objeto não encontrado Id: " + id + ", Tipo: " + ProductEntity.class.getName()));
+                        "Object not found: " + id + ", Type: " + ProductEntity.class.getName()));
     }
 
     public Page<ProductEntity> search(String name, List<Integer> ids, Integer page, Integer linesPerPage, String orderBy, String direction) {
