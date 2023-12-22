@@ -1,0 +1,27 @@
+openapi: 3.0.3
+servers:
+  - url: "http://localhost:8080"
+info:
+  title: spring-boot-study
+  version: 1.0.0
+
+paths:
+  /ping:
+    get:
+      summary: Ping Pong
+      operationId: ping
+      description: Send ping message
+      responses:
+        "201":
+          description: Response to the message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+components:
+  schemas:
+    MessageResponse:
+      properties:
+        text:
+          type: string
