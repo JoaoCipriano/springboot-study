@@ -19,7 +19,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +36,7 @@ public class CustomerService {
     private final UserService userService;
     private final AddressRepository addressRepository;
     private final CustomerMapper customerMapper;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final ImageService imageService;
     private final String prefix;
@@ -46,7 +46,7 @@ public class CustomerService {
                            UserService useruserService,
                            AddressRepository addressRepository,
                            CustomerMapper customerMapper,
-                           BCryptPasswordEncoder passwordEncoder,
+                           PasswordEncoder passwordEncoder,
                            S3Service s3Service,
                            ImageService imageService,
                            @Value("${img.prefix.client.profile}") String prefix,
