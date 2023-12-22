@@ -21,7 +21,10 @@ public class SecurityConfiguration {
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/produtos/**",
             "/categorias/**",
-            "/estados/**"
+            "/estados/**",
+            "/api-docs/**",
+            "/swagger-ui/**",
+            "/ping/**"
     };
 
     private static final String[] PUBLIC_MATCHERS_POST = {
