@@ -19,17 +19,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private static final String[] PUBLIC_MATCHERS_GET = {
-            "/produtos/**",
-            "/categorias/**",
-            "/estados/**",
+            "/products/**",
+            "/categories/**",
             "/api-docs/**",
-            "/swagger-ui/**",
-            "/ping/**"
+            "/swagger-ui/**"
     };
 
     private static final String[] PUBLIC_MATCHERS_POST = {
-            "/clientes",
-            "/auth/forgot/**"
+            "/customers",
+            "/auth/register",
+            "/auth/authenticate",
+            "/auth/forgot"
     };
 
     private final JwtAuthenticationFilter jwtAuthFilter;

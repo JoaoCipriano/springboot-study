@@ -1,11 +1,11 @@
 package com.joaolucas.study.application.category;
 
+import com.joaolucas.model.CategoryRequest;
+import com.joaolucas.model.CategoryResponse;
+import com.joaolucas.model.PageCategoryResponse;
 import com.joaolucas.study.application.category.mapper.CategoryMapper;
-import com.joaolucas.study.controller.category.model.CategoryRequest;
-import com.joaolucas.study.controller.category.model.CategoryResponse;
 import com.joaolucas.study.domain.category.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class CategoryApplicationService {
         return categoryMapper.toResponses(categoryService.findAll());
     }
 
-    public Page<CategoryResponse> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+    public PageCategoryResponse findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         var pageableEntity = categoryService.findPage(page, linesPerPage, orderBy, direction);
         return categoryMapper.toPageableResponse(pageableEntity);
     }
