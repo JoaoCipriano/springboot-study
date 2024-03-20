@@ -7,21 +7,19 @@ import java.util.stream.Stream;
 @Getter
 public enum CustomerType {
 
-    PESSOA_FISICA(1, "Pessoa Física"),
-    PESSOA_JURIDICA(2, "Pessoa Jurídica");
+    NATURAL_PERSON(1),
+    LEGAL_PERSON(2);
 
-    private final int code;
-    private final String description;
+    private final Integer code;
 
-    CustomerType(int code, String description) {
+    CustomerType(Integer code) {
         this.code = code;
-        this.description = description;
     }
 
-    public static CustomerType toEnum(Integer cod) {
+    public static CustomerType toEnum(Integer code) {
         return Stream.of(CustomerType.values())
-                .filter(e -> cod.equals(e.getCode()))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid ID: " + cod));
+                .filter(customerType -> customerType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid code: " + code));
     }
 }

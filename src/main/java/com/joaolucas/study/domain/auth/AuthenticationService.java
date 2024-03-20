@@ -1,8 +1,8 @@
 package com.joaolucas.study.domain.auth;
 
-import com.joaolucas.study.controller.auth.model.AuthenticationRequest;
-import com.joaolucas.study.controller.auth.model.AuthenticationResponse;
-import com.joaolucas.study.controller.auth.model.RegisterRequest;
+import com.joaolucas.model.AuthenticationRequest;
+import com.joaolucas.model.AuthenticationResponse;
+import com.joaolucas.model.RegisterRequest;
 import com.joaolucas.study.domain.exceptions.AuthorizationException;
 import com.joaolucas.study.domain.exceptions.ObjectNotFoundException;
 import com.joaolucas.study.domain.jwt.JwtService;
@@ -11,7 +11,6 @@ import com.joaolucas.study.infrastructure.database.user.Role;
 import com.joaolucas.study.infrastructure.database.user.UserEntity;
 import com.joaolucas.study.infrastructure.database.user.UserRepository;
 import com.joaolucas.study.infrastructure.email.EmailService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,17 +34,15 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = UserEntity.builder()
-                .firstName(request.getFirstname())
-                .lastName(request.getLastname())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(Set.of(Role.USER.ordinal()))
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return new AuthenticationResponse().token(jwtToken);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -58,23 +55,20 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ObjectNotFoundException("Failed to find"));
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return new AuthenticationResponse().token(jwtToken);
     }
 
-    public void refreshToken(HttpServletResponse response) {
+    public AuthenticationResponse refreshToken() {
         var user = UserService.authenticated();
         if (user == null)
-            throw new AuthorizationException("Acesso negado");
+            throw new AuthorizationException("Access denied");
         var token = jwtService.generateToken(user);
-        response.addHeader("Authorization", "Bearer " + token);
-        response.addHeader("access-control-expose-headers", "Authorization");
+        return new AuthenticationResponse().token(token);
     }
 
     public void sendNewPassword(String email) {
         var userEntity = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ObjectNotFoundException("Email não encontrado"));
+                .orElseThrow(() -> new ObjectNotFoundException("Email was not found"));
 
         var newPassword = newPassword();
         userEntity.setPassword(passwordEncoder.encode(newPassword));
@@ -93,13 +87,11 @@ public class AuthenticationService {
 
     private char randomChar() {
         int opt = rand.nextInt(3);
-        if (opt == 0) {
-            return generateOneDigit();
-        } else if (opt == 1) {
-            return generateOneUpperCaseLetter();
-        } else {
-            return generateOneLowerCaseLetter();
-        }
+        return switch (opt) {
+            case 0 -> generateOneDigit();
+            case 1 -> generateOneUpperCaseLetter();
+            default -> generateOneLowerCaseLetter();
+        };
     }
 
     private char generateOneDigit() {

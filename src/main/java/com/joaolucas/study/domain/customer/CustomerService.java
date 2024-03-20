@@ -1,7 +1,7 @@
 package com.joaolucas.study.domain.customer;
 
+import com.joaolucas.model.CustomerRequest;
 import com.joaolucas.study.application.customer.mapper.CustomerMapper;
-import com.joaolucas.study.controller.customer.model.CustomerRequest;
 import com.joaolucas.study.domain.customer.model.Customer;
 import com.joaolucas.study.domain.exceptions.AuthorizationException;
 import com.joaolucas.study.domain.exceptions.DataIntegrityException;
@@ -78,7 +78,7 @@ public class CustomerService {
     @Transactional
     public Customer insert(CustomerRequest customerRequest) {
         var customerEntity = customerMapper.toEntity(customerRequest);
-        var userEntity = customerMapper.toUserEntity(customerRequest, passwordEncoder.encode(customerRequest.password()));
+        var userEntity = customerMapper.toUserEntity(customerRequest, passwordEncoder.encode(customerRequest.getPassword()));
         userEntity = userService.save(userEntity);
         customerEntity = customerRepository.save(customerEntity);
         addressRepository.saveAll(customerEntity.getAddresses());

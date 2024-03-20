@@ -1,11 +1,11 @@
 package com.joaolucas.study.application.customer;
 
+import com.joaolucas.model.CustomerRequest;
+import com.joaolucas.model.CustomerResponse;
+import com.joaolucas.model.PageableCustomerResponse;
 import com.joaolucas.study.application.customer.mapper.CustomerMapper;
-import com.joaolucas.study.controller.customer.model.CustomerRequest;
-import com.joaolucas.study.controller.customer.model.CustomerResponse;
 import com.joaolucas.study.domain.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,10 +22,10 @@ public class CustomerApplicationService {
         return customerMapper.toResponse(customerService.findById(id));
     }
 
-    public Page<CustomerResponse> findPage(Integer page,
-                                           Integer linesPerPage,
-                                           String orderBy,
-                                           String direction) {
+    public PageableCustomerResponse findPage(Integer page,
+                                             Integer linesPerPage,
+                                             String orderBy,
+                                             String direction) {
         return customerMapper.toPageableResponse(customerService.findPage(page, linesPerPage, orderBy, direction));
     }
 

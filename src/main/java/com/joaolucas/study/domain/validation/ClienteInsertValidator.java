@@ -28,11 +28,11 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 
         var list = new ArrayList<FieldMessage>();
 
-        if (customerRequest.type().equals(CustomerType.PESSOA_FISICA.getCode()) && !BR.isValidCPF(customerRequest.socialId())) {
+        if (customerRequest.type().equals(CustomerType.NATURAL_PERSON.getCode()) && !BR.isValidCPF(customerRequest.socialId())) {
             list.add(new FieldMessage("socialId", "invalid CPF"));
         }
 
-        if (customerRequest.type().equals(CustomerType.PESSOA_JURIDICA.getCode()) && !BR.isValidCNPJ(customerRequest.socialId())) {
+        if (customerRequest.type().equals(CustomerType.LEGAL_PERSON.getCode()) && !BR.isValidCNPJ(customerRequest.socialId())) {
             list.add(new FieldMessage("socialId", "invalid CNPJ"));
         }
 
