@@ -3,7 +3,7 @@ package com.joaolucas.study.controller.category;
 import com.joaolucas.api.CategoryApi;
 import com.joaolucas.model.CategoryRequest;
 import com.joaolucas.model.CategoryResponse;
-import com.joaolucas.model.PageCategoryResponse;
+import com.joaolucas.model.PageableCategoryResponse;
 import com.joaolucas.study.application.category.CategoryApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class CategoryController implements CategoryApi {
     }
 
     @Override
-    public ResponseEntity<PageCategoryResponse> findPage(Integer page,
+    public ResponseEntity<PageableCategoryResponse> findPageableCategory(Integer page,
                                                          Integer linesPerPage,
                                                          String orderBy,
                                                          String direction) {

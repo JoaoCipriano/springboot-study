@@ -154,11 +154,11 @@ paths:
       responses:
         '201':
           description: Category has been created successfully
-  /categories/page:
+  /categories/pages:
     get:
       tags:
         - Category
-      operationId: findPage
+      operationId: findPageableCategory
       summary: Returns a category page
       parameters:
         - name: page
@@ -188,12 +188,157 @@ paths:
             default: ASC
       responses:
         '200':
-          description: Página de categorias retornada com sucesso
+          description: Categories page has been found successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageCategoryResponse'
+                $ref: '#/components/schemas/PageableCategoryResponse'
 
+  /customers:
+    post:
+      tags:
+        - Customer
+      operationId: save
+      summary: Insert a new customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '201':
+          description: Created
+  /customers/{id}:
+    get:
+      tags:
+        - Customer
+      operationId: findById
+      summary: Returns a customer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: The Customer has been found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+    put:
+      tags:
+        - Customer
+      operationId: updateById
+      summary: Update an existing customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '204':
+          description: No Content
+    delete:
+      tags:
+        - Customer
+      operationId: deleteById
+      summary: Delete a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+  /customers/pages:
+    get:
+      tags:
+        - Customer
+      operationId: findPageableCustomer
+      summary: Returns a customers page
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: linesPerPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 24
+        - name: orderBy
+          in: query
+          required: false
+          schema:
+            type: string
+            default: name
+        - name: direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ ASC, DESC ]
+            default: ASC
+      responses:
+        '200':
+          description: Customers page has been found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageableCustomerResponse'
+  /customers/{email}:
+    get:
+      tags:
+        - Customer
+      operationId: findByEmail
+      summary: Find customer by email
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+  /customers/pictures:
+    post:
+      tags:
+        - Customer
+      operationId: uploadProfilePicture
+      summary: Upload a profile picture
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Created
 components:
   schemas:
     MessageResponse:
@@ -245,7 +390,7 @@ components:
           type: string
           minLength: 5
           maxLength: 80
-    PageCategoryResponse:
+    PageableCategoryResponse:
       type: object
       properties:
         content:
@@ -266,7 +411,116 @@ components:
           type: string
         price:
           type: number
-
+    CustomerResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        socialId:
+          type: string
+        type:
+          $ref: '#/components/schemas/CustomerTypeResponse'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressResponse'
+        phones:
+          type: array
+          items:
+            type: string
+    CustomerTypeResponse:
+      type: string
+      enum:
+        - NATURAL_PERSON
+        - LEGAL_PERSON
+    AddressResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        publicPlace:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+        neighborhood:
+          type: string
+        zipCode:
+          type: string
+        city:
+          type: string
+    PageableCustomerResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerResponse'
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+    CustomerRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          minLength: 5
+          maxLength: 120
+        lastName:
+          type: string
+          minLength: 5
+          maxLength: 120
+        email:
+          type: string
+          format: email
+        socialId:
+          type: string
+        type:
+          type: integer
+        password:
+          type: string
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressRequest'
+        phones:
+          type: array
+          items:
+            type: string
+      required:
+        - firstName
+        - lastName
+        - email
+        - socialId
+        - password
+        - addresses
+        - phones
+    AddressRequest:
+      type: object
+      properties:
+        publicPlace:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+        neighborhood:
+          type: string
+        zipCode:
+          type: string
+      required:
+        - publicPlace
+        - number
+        - zipCode
   securitySchemes:
     bearerAuth:
       type: http

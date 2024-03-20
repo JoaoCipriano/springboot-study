@@ -2,7 +2,7 @@ package com.joaolucas.study.application.category.mapper;
 
 import com.joaolucas.model.CategoryRequest;
 import com.joaolucas.model.CategoryResponse;
-import com.joaolucas.model.PageCategoryResponse;
+import com.joaolucas.model.PageableCategoryResponse;
 import com.joaolucas.study.infrastructure.database.category.CategoryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,8 +17,8 @@ public interface CategoryMapper {
 
     List<CategoryResponse> toResponses(List<CategoryEntity> entities);
 
-    default PageCategoryResponse toPageableResponse(Page<CategoryEntity> pageableEntity) {
-        return new PageCategoryResponse()
+    default PageableCategoryResponse toPageableResponse(Page<CategoryEntity> pageableEntity) {
+        return new PageableCategoryResponse()
                 .content(toResponses(pageableEntity.toList()))
                 .totalPages(pageableEntity.getPageable().getPageSize())
                 .totalElements(pageableEntity.getTotalElements());

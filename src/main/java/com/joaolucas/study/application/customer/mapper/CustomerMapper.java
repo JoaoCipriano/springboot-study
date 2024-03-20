@@ -1,7 +1,8 @@
 package com.joaolucas.study.application.customer.mapper;
 
-import com.joaolucas.study.controller.customer.model.CustomerRequest;
-import com.joaolucas.study.controller.customer.model.CustomerResponse;
+import com.joaolucas.model.CustomerRequest;
+import com.joaolucas.model.CustomerResponse;
+import com.joaolucas.model.PageableCustomerResponse;
 import com.joaolucas.study.domain.customer.model.Customer;
 import com.joaolucas.study.infrastructure.database.customer.CustomerEntity;
 import com.joaolucas.study.infrastructure.database.customer.CustomerType;
@@ -33,12 +34,11 @@ public interface CustomerMapper {
 
     List<CustomerResponse> toResponses(List<Customer> customerModels);
 
-    default Page<CustomerResponse> toPageableResponse(Page<Customer> pageableModels) {
-        return new PageImpl<>(
-                toResponses(pageableModels.toList()),
-                pageableModels.getPageable(),
-                pageableModels.getTotalElements()
-        );
+    default PageableCustomerResponse toPageableResponse(Page<Customer> pageableModels) {
+        return new PageableCustomerResponse()
+                .content(toResponses(pageableModels.toList()))
+                .totalPages(pageableModels.getTotalPages())
+                .totalElements(pageableModels.getTotalElements());
     }
 
     default Page<Customer> toPageableModel(Page<CustomerEntity> pageableEntity) {
@@ -66,7 +66,7 @@ public interface CustomerMapper {
     @Mapping(target = "type", expression = "java(CustomerType.toEnum(customerEntity.getType()))")
     Customer toModel(UserEntity userEntity, CustomerEntity customerEntity);
 
-    @Mapping(target = "type", expression = "java(CustomerType.toEnum(customerRequest.type()))")
+    @Mapping(target = "type", expression = "java(CustomerType.toEnum(customerRequest.getType()))")
     Customer toModel(CustomerRequest customerRequest);
 
     @Mapping(target = "firstName", source = "customerRequest.firstName")

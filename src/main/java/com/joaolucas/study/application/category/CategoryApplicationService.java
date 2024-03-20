@@ -2,7 +2,7 @@ package com.joaolucas.study.application.category;
 
 import com.joaolucas.model.CategoryRequest;
 import com.joaolucas.model.CategoryResponse;
-import com.joaolucas.model.PageCategoryResponse;
+import com.joaolucas.model.PageableCategoryResponse;
 import com.joaolucas.study.application.category.mapper.CategoryMapper;
 import com.joaolucas.study.domain.category.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class CategoryApplicationService {
         return categoryMapper.toResponses(categoryService.findAll());
     }
 
-    public PageCategoryResponse findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+    public PageableCategoryResponse findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         var pageableEntity = categoryService.findPage(page, linesPerPage, orderBy, direction);
         return categoryMapper.toPageableResponse(pageableEntity);
     }
